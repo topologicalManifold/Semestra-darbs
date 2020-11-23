@@ -17,7 +17,7 @@ class MainScreen(Screen):
 
 
 class MainApp(MDApp):
-    main_text_color = properties.ColorProperty(None)
+    text_color = properties.ColorProperty(None)
     def build(self):
         self.theme_cls.theme_style = data['theme']
         self.theme_cls.primary_palette = "BlueGray"
@@ -29,6 +29,12 @@ class MainApp(MDApp):
         return self.screen_manager
 
 
+    def update_text_color(self):
+        if self.theme_cls.theme_style == "Dark":
+            self.text_color = (1, 1, 1, 1)
+        else:
+            self.text_color = (0, 0, 0, 1)
+
     def write_data_to_config_file(self):
         with open("config.json", "w") as config_file:
             json.dump(data, config_file)
@@ -37,5 +43,6 @@ if __name__ == "__main__":
     for file_path in glob.glob(os.path.join("screens", "*.kv")):
         with open(file_path, 'r', encoding='utf-8') as file:
             Builder.load_string(file.read())
+
     main_app = MainApp()
     main_app.run()

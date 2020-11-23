@@ -1,4 +1,30 @@
 #:kivy 1.11.1
 
+#:import BoxLayout kivy.uix.boxlayout.BoxLayout
+#:import RelativeLayout kivy.uix.relativelayout.RelativeLayout
+#:import GridLayout kivy.uix.gridlayout.GridLayout
+#:import Label kivy.uix.label.Label
+
 
 <MainScreen>:
+    BoxLayout:
+        orientation: "horizontal"
+        RelativeLayout:
+            GridLayout:
+                cols: 1
+                pos_hint: {"x": 0.1, "top": 1}
+                spacing: "15dp"
+                size_hint: 0.9, None
+                Label:
+                    markup: True
+                    text: "[size=25][b]Lēts Photoshop[/b][/size]\n[size=15]Kad žēl naudu normālajam[/size]"
+                    color: app.text_color
+                    size_hint: 1, None
+                    halign: "center"
+                    
+        RelativeLayout:
+            GridLayout:
+                cols: 1
+                pos_hint: {"x": 0.1, "top": 0.85}
+                spacing: "15dp"
+                size_hint: 0.85, None
