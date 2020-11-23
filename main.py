@@ -39,6 +39,11 @@ class MainApp(MDApp):
         with open("config.json", "w") as config_file:
             json.dump(data, config_file)
 
+    def open_file_manager(self):
+        pass
+    
+    def open_file_and_set_image_screen(self):
+        pass
 if __name__ == "__main__":
     for file_path in glob.glob(os.path.join("screens", "*.kv")):
         with open(file_path, 'r', encoding='utf-8') as file:

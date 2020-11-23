@@ -4,7 +4,9 @@
 #:import RelativeLayout kivy.uix.relativelayout.RelativeLayout
 #:import GridLayout kivy.uix.gridlayout.GridLayout
 #:import Label kivy.uix.label.Label
-
+#:import MDTextField kivymd.uix.textfield.MDTextField
+#:import MDIconButton kivymd.uix.button.MDIconButton
+#:import MDRectangleFlatButton kivymd.uix.button.MDRectangleFlatButton
 
 <MainScreen>:
     BoxLayout:
@@ -21,7 +23,24 @@
                     color: app.text_color
                     size_hint: 1, None
                     halign: "center"
-                    
+                GridLayout:
+                    rows: 1
+                    size_hint: 1, None
+                    height: image_path_input.height
+                    MDTextField:
+                        id: image_path_input
+                        hint_text: "Ceļš līdz attēlam"
+                        size_hint: 0.7, None
+                        text: ""
+                    MDIconButton:
+                        icon: "image-search"
+                        on_press: app.open_file_manager()
+                MDRectangleFlatButton:
+                    text: "ok"
+                    text_color: app.text_color
+                    pos_hint: {"center_x": 0.7}
+                    on_press: app.open_file_and_set_image_screen()
+
         RelativeLayout:
             GridLayout:
                 cols: 1
