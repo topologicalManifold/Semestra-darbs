@@ -2,6 +2,8 @@ import os
 import glob
 import json
 
+
+# import kivy
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -14,7 +16,8 @@ with open("config.json", 'r') as config_file:
 class MainScreen(Screen):
     pass
 
-
+class SettingsScreen(Screen):
+    pass
 
 class MainApp(MDApp):
     text_color = properties.ColorProperty(None)
@@ -22,6 +25,8 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = data['theme']
         self.theme_cls.primary_palette = "BlueGray"
         self.title = "Lēts Photoshop"
+
+        self.update_text_color()
 
         self.screen_manager = ScreenManager()
         self.main_screen = MainScreen(name="main_screen")
@@ -44,6 +49,8 @@ class MainApp(MDApp):
     
     def open_file_and_set_image_screen(self):
         pass
+
+    
 if __name__ == "__main__":
     for file_path in glob.glob(os.path.join("screens", "*.kv")):
         with open(file_path, 'r', encoding='utf-8') as file:
