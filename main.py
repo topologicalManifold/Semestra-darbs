@@ -17,6 +17,9 @@ class MainScreen(Screen):
 class SettingsScreen(Screen):
     pass
 
+class AboutScreen(Screen):
+    pass
+
 class MainApp(MDApp):
     text_color = properties.ColorProperty(None)
     def build(self):
