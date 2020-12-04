@@ -2,8 +2,6 @@ import os
 import glob
 import json
 
-
-# import kivy
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
@@ -25,7 +23,7 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = data['theme']
         self.theme_cls.primary_palette = "BlueGray"
         self.title = "Lēts Photoshop"
-
+        
         self.update_text_color()
 
         self.screen_manager = ScreenManager()
