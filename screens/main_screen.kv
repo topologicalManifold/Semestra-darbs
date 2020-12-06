@@ -4,9 +4,25 @@
 #:import RelativeLayout kivy.uix.relativelayout.RelativeLayout
 #:import GridLayout kivy.uix.gridlayout.GridLayout
 #:import Label kivy.uix.label.Label
+
 #:import MDTextField kivymd.uix.textfield.MDTextField
 #:import MDIconButton kivymd.uix.button.MDIconButton
 #:import MDRectangleFlatButton kivymd.uix.button.MDRectangleFlatButton
+#:import MDCard kivymd.uix.card.MDCard
+#:import MDLabel kivymd.uix.label.MDLabel
+
+<CustomCard>:
+    size_hint_y: None
+    height: card_label.height
+    MDLabel:
+        id: card_label
+        text: root.text
+        color: app.text_color
+        halign: "center"
+        size_hint: (1, None)
+        pos_hint: {"top": 1}
+        height: "50dp"
+
 
 <MainScreen>:
     BoxLayout:
@@ -47,3 +63,38 @@
                 pos_hint: {"x": 0.1, "top": 0.85}
                 spacing: "15dp"
                 size_hint: 0.85, None
+
+                MDLabel:
+                    text: "Iestatījumi un par programmu"
+                    color: app.text_color
+                    font_style: "H5"
+                    
+                    size_hint: 1, None
+                    halign: "center"
+                
+                MDCard:
+                    size_hint_y: None
+                    height: main_label.height
+                    padding: ("10dp", 0)
+                    on_press: app.open_settings_screen()
+                    MDLabel:
+                        id: main_label
+                        text: "iestatījumi"
+                        color: app.text_color
+                        halign: "left"
+                        size_hint: (1, None)
+                        pos_hint: {"top": 1}
+                        height: "50dp"
+                MDCard:
+                    size_hint_y: None
+                    height: main_label.height
+                    padding: ("10dp", 0)
+                    on_press: app.open_about_screen()
+                    MDLabel:
+                        id: main_label
+                        text: "kā programma darbojas?"
+                        color: app.text_color
+                        halign: "left"
+                        size_hint: (1, None)
+                        pos_hint: {"top": 1}
+                        height: "50dp"

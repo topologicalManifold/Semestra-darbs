@@ -30,8 +30,15 @@ class MainApp(MDApp):
         self.update_text_color()
 
         self.screen_manager = ScreenManager()
-        self.main_screen = MainScreen(name="main_screen")
+        self.main_screen = MainScreen(name="main")
         self.screen_manager.add_widget(self.main_screen)
+
+        self.settings_screen = SettingsScreen(name="settings")
+        self.screen_manager.add_widget(self.settings_screen)
+
+        self.about_screen = AboutScreen(name="about")
+        self.screen_manager.add_widget(self.about_screen)
+
         return self.screen_manager
 
 
@@ -50,6 +57,12 @@ class MainApp(MDApp):
     
     def open_file_and_set_image_screen(self):
         pass
+
+    def open_about_screen(self):
+        self.screen_manager.current = "about"
+
+    def open_settings_screen(self):
+        self.screen_manager.current = "settings"
 
     
 if __name__ == "__main__":
