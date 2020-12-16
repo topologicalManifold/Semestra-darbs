@@ -1,0 +1,10 @@
+Autori
+======
+Programu "Lēts Photoshop" izveidoja **Marta Kalniņa** un **Antons Nikolajevs**
+
+Semestra darba nosacījumi
+=========================
+Izveidot programmu ar grafisko saskarni, ar kuras palīdzību var ielasīt 
+attēlusun ar peles kursoru iezīmēt kādu attēla apgabalu. Programma veic 
+iezīmētās attēla daļas krāsustatistisko analīzi: parāda pikseļu gaišuma (luminosity) 
+histogrammu un vidējo krāsu.

@@ -18,7 +18,12 @@ class SettingsScreen(Screen):
     pass
 
 class AboutScreen(Screen):
-    pass
+    text = properties.StringProperty("")
+
+    def __init__(self, **kwargs):
+        super(AboutScreen, self).__init__(**kwargs)
+        with open("about.txt", "r", encoding="utf-8") as f:
+            self.text = f.read()
 
 class MainApp(MDApp):
     text_color = properties.ColorProperty(None)
@@ -83,6 +88,8 @@ class MainApp(MDApp):
         data["theme"] = self.theme_cls.theme_style
         self.write_data_to_config_file()
 
+    def open_main_screen(self):
+        self.screen_manager.current = "main"
     
 if __name__ == "__main__":
     for file_path in glob.glob(os.path.join("screens", "*.kv")):

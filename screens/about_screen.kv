@@ -1,0 +1,14 @@
+#:kivy 1.11.1
+
+#:import BoxLayout kivy.uix.boxlayout.BoxLayout
+#:import MDIconButton kivymd.uix.button.MDIconButton
+
+
+<AboutScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        MDIconButton:
+            icon: "arrow-left"
+            on_press: app.open_main_screen()
+        RstDocument:
+            text: root.text
