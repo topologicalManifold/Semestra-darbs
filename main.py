@@ -63,6 +63,25 @@ class MainApp(MDApp):
 
     def open_settings_screen(self):
         self.screen_manager.current = "settings"
+        if self.theme_cls.theme_style == "Dark":
+            self.settings_screen.ids.change_theme_button.text = "Switch to Light theme"
+        else:
+            self.settings_screen.ids.change_theme_button.text = "Switch to Dark theme"
+    
+    def cahnge_theme(self):
+        if self.theme_cls.theme_style == "Light":
+            self.theme_cls.theme_style = "Dark"
+            self.update_text_color()
+            self.settings_screen.ids.change_theme_button.text = "Switch to Light theme"
+        else:
+            self.theme_cls.theme_style = "Light"
+            self.update_text_color()
+            self.settings_screen.ids.change_theme_button.text = "Switch to Dark theme"
+    
+    def open_start_screen_and_save_settings(self):
+        self.screen_manager.current = "main"
+        data["theme"] = self.theme_cls.theme_style
+        self.write_data_to_config_file()
 
     
 if __name__ == "__main__":

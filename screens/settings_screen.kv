@@ -1,0 +1,33 @@
+#:kivy 1.11.1
+
+#:import RelativeLayout kivy.uix.relativelayout.RelativeLayout
+#:import GridLayout kivy.uix.gridlayout.GridLayout
+
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import MDRectangleFlatButton kivymd.uix.button.MDRectangleFlatButton
+
+
+<SettingsScreen>:
+    RelativeLayout:
+        GridLayout:
+            cols: 1
+            pos_hint: {"top": 0.95, "x": 0.1}
+            size_hint: 0.7, None
+            MDLabel:
+                text: "Theme"
+                font_style: "H6"
+                color: app.text_color
+                pos_hint: {"top": 0.95, "x": 0.1}
+                size_hint: (1, None)
+            MDRectangleFlatButton:
+                id: change_theme_button
+                text: ""
+                on_press: app.cahnge_theme()
+                text_color: app.text_color
+            MDLabel:
+                text: "Citi iestatījumi nav paredzēti..."
+                size_hint: (1, None)
+                color: app.text_color
+            MDRectangleFlatButton:
+                text: "Atpakaļ"
+                on_press: app.open_start_screen_and_save_settings()
