@@ -6,7 +6,7 @@ from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 import kivy.properties as properties
-
+from kivy.uix.rst import RstDocument
 # load config file
 with open("config.json", 'r') as config_file:
     data = json.load(config_file)
