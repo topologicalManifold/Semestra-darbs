@@ -7,9 +7,16 @@ from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 import kivy.properties as properties
 from kivy.uix.rst import RstDocument
+from filemanager import MDFileManager
+
 # load config file
 with open("config.json", 'r') as config_file:
     data = json.load(config_file)
+
+
+class ImageScreen(Screen):
+    pass
+
 
 class MainScreen(Screen):
     pass
@@ -44,6 +51,8 @@ class MainApp(MDApp):
         self.about_screen = AboutScreen(name="about")
         self.screen_manager.add_widget(self.about_screen)
 
+        self.image_screen = ImageScreen(name="image")
+        self.screen_manager.add_widget(self.image_screen)
         return self.screen_manager
 
 
@@ -58,10 +67,26 @@ class MainApp(MDApp):
             json.dump(data, config_file)
 
     def open_file_manager(self):
-        pass
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            ext=[".jpg", '.png', "jpeg"]
+        )
+        self.file_manager.show("\\")
+
+    def select_path(self, path):
+        self.exit_manager()
+        self.main_screen.ids.image_path_input.text = path
+
+    def exit_manager(self, *args):
+        self.manager_open = False
+        self.file_manager.close()
     
     def open_file_and_set_image_screen(self):
-        pass
+        path = self.main_screen.ids.image_path_input.text
+        if os.path.isfile(path) and os.path.splitext(path)[1] in [".png", ".jpg", "jpeg"]:
+            self.image_path = path
+            self.screen_manager.current = "image"
 
     def open_about_screen(self):
         self.screen_manager.current = "about"
@@ -83,7 +108,7 @@ class MainApp(MDApp):
             self.update_text_color()
             self.settings_screen.ids.change_theme_button.text = "Switch to Dark theme"
     
-    def open_start_screen_and_save_settings(self):
+    def open_main_screen_and_save_settings(self):
         self.screen_manager.current = "main"
         data["theme"] = self.theme_cls.theme_style
         self.write_data_to_config_file()
