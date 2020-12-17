@@ -1,0 +1,67 @@
+#:kivy 1.11.1
+
+#:import RelativeLayout kivy.uix.relativelayout.RelativeLayout
+#:import ScatterLayout kivy.uix.scatterlayout.ScatterLayout
+#:import GridLayout kivy.uix.gridlayout.GridLayout
+#:import BoxLayout kivy.uix.boxlayout.BoxLayout
+#:import Image kivy.uix.image.Image
+#:import Scatter kivy.uix.scatter.Scatter
+#:import MDLabel kivymd.uix.label.MDLabel
+#:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import win kivy.core.window
+#:import FloatLayout kivy.uix.floatlayout.FloatLayout
+
+
+<ResizableImage>:
+    do_rotation: False
+    size: opened_image.size
+    size_hint: None, None
+
+    Image:
+        size: (500, 500/self.image_ratio)
+        id: opened_image
+        source: app.image_path
+
+<CustomIconButtonGroup>:
+    rows: 1
+    MDIconButton:
+        id: move_button
+        icon: "cursor-move"
+        theme_text_color: "Custom"
+        text_color: get_color_from_hex("#f3ab44")
+        on_press: root.on_move()
+    MDIconButton:
+        id: select_button
+        icon: "select-drag"
+        theme_text_color: "Custom"
+        text_color: get_color_from_hex("#ffffff")
+        on_press: root.on_select()
+
+<CustomToolBar@BoxLayout>:
+    orientation: "vertical"
+    canvas.before:
+        Color:
+            rgba: get_color_from_hex("#344954")
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    MDIconButton:
+        icon: "chevron-left"
+        theme_text_color: "Custom"
+        text_color: get_color_from_hex("#ffffff")
+        on_press: app.open_main_screen()
+    CustomIconButtonGroup:
+        id: icon_button_group
+
+<ImageScreen>:
+    GridLayout:
+        rows: 1
+        FloatLayout:
+            size_hint_x: 0.8
+            ResizableImage:
+                id: resizable_image
+        CustomToolBar:
+            size_hint_x: 0.2
+        Widget:
+            id: canvas_widget
+            size_hint_x: 0

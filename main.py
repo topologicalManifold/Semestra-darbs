@@ -1,21 +1,119 @@
 import os
 import glob
 import json
+import PIL
+# disabling multitouch
+from kivy.config import Config  # must be imported first!
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
+
 
 from kivymd.app import MDApp
+from kivy.core.window import Window
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 import kivy.properties as properties
 from kivy.uix.rst import RstDocument
+from kivy.uix.gridlayout import GridLayout
 from filemanager import MDFileManager
+from kivy.utils import get_color_from_hex
+from kivy.graphics import Rectangle, Color
+from kivy.uix.scatter import Scatter
 
 # load config file
 with open("config.json", 'r') as config_file:
     data = json.load(config_file)
 
+class ResizableImage(Scatter):
+    def __init__(self, **kwargs):
+        super(ResizableImage, self).__init__(**kwargs)
+        
+    def on_touch_down(self, touch):
+        self.start_pos = None
+        if main_app.image_screen.selecting and touch.pos[0] < Window.width*0.8:
+            if self.if_cursor_inside_image(self.pos, self.size, touch.pos):
+                self.start_pos = touch.pos
+            else:
+                self.start_pos = None
+        elif ((not main_app.image_screen.selecting) and touch.pos[0] < Window.width*0.8):
+            super(ResizableImage, self).on_touch_down(touch)
+
+    def on_touch_move(self, touch):
+        self.end_pos = None
+        if main_app.image_screen.selecting:
+            if touch.pos[0] < Window.width*0.8:
+                if self.start_pos:
+                    if self.if_cursor_inside_image(self.pos, self.size, touch.pos):
+
+                        img = main_app.image_screen.ids.canvas_widget
+                        img.canvas.after.clear()
+                        with img.canvas.after:
+                            
+                            Color(1, 1, 1, 0.3)
+                            _size = [abs(self.start_pos[0] - touch.pos[0]), abs(self.start_pos[1] - touch.pos[1])]
+                            _pos = [min((self.start_pos[0], touch.pos[0])), min((self.start_pos[1], touch.pos[1]))]
+                            self.rect = Rectangle(pos=_pos, size=_size)
+                            self.end_pos = touch.pos
+                else:
+                    main_app.image_screen.ids.canvas_widget.canvas.after.clear()
+                    self.start_pos = None
+
+
+        else:
+            if touch.pos[0] < Window.width*0.8:
+                super(ResizableImage, self).on_touch_move(touch)
+        #print("[IPOS    ]", self.pos)
+
+    def on_touch_up(self, touch):
+        if main_app.image_screen.selecting:
+            if self.start_pos and self.end_pos:
+                
+                #print("[POS S E ]", self.start_pos, self.end_pos)
+                s, e = self.calculate_position_on_image(self.start_pos, self.end_pos, self.pos, self.size)
+                self.create_histogram(s, e)
+        else:
+            super(ResizableImage, self).on_touch_up(touch)
+
+    def create_histogram(s, e):
+        pass
+
+    def calculate_position_on_image(self, s_pos, e_pos, i_pos, size):    #BUG: after resizing it finds region incorectly
+        real_start_pos = [s_pos[0] - i_pos[0], s_pos[1] - i_pos[1]]
+        real_end_pos = [e_pos[0] - i_pos[0], e_pos[1] - i_pos[1]]
+        #print("[R POS S E]", real_start_pos, real_end_pos)
+        #print("[M SIZE  ]", s_pos[0] - e_pos[0], s_pos[1] - e_pos[1])
+        #print("[R SIZE  ]", real_start_pos[0] - real_end_pos[0], real_start_pos[1] - real_end_pos[1], size)
+        img = PIL.Image.open(main_app.image_path)
+        w, h = img.size
+        img_pos_start = [round(w * real_start_pos[0] / size[0], 0), round(h * real_start_pos[1] / size[1], 0)]
+        img_pos_end = [round(w * real_end_pos[0] / size[0], 0), round(h * real_end_pos[1] / size[1], 0)]
+
+        _s = min((img_pos_start[0], img_pos_end[0])), h - max((img_pos_start[1], img_pos_end[1]))
+        _e = max((img_pos_start[0], img_pos_end[0])), h - min((img_pos_start[1], img_pos_end[1]))
+        return _s, _e
+        #print("[W H S E SIZE]", w, h, _s, _e, (_e[0]-_s[0], _e[1]- _s[1]))
+    
+    def if_cursor_inside_image(self, pos, size, point):
+        if (point[0] > pos[0] and point[0] < pos[0]+size[0] and point[1] > pos[1] and point[1] < pos[1]+size[1]): 
+            return True
+        else : 
+            return False
+
+
+class CustomIconButtonGroup(GridLayout):
+    def on_move(self):
+        main_app.image_screen.selecting = False
+        self.ids.move_button.text_color = get_color_from_hex("#f3ab44")
+        self.ids.select_button.text_color = get_color_from_hex("#ffffff")
+        main_app.image_screen.ids.canvas_widget.canvas.after.clear()
+
+    def on_select(self):
+        main_app.image_screen.selecting = True
+        self.ids.move_button.text_color = get_color_from_hex("#ffffff")
+        self.ids.select_button.text_color = get_color_from_hex("#f3ab44")
+
 
 class ImageScreen(Screen):
-    pass
+    selecting = properties.BooleanProperty(False)
 
 
 class MainScreen(Screen):
@@ -34,6 +132,7 @@ class AboutScreen(Screen):
 
 class MainApp(MDApp):
     text_color = properties.ColorProperty(None)
+    image_path = properties.StringProperty("")
     def build(self):
         self.theme_cls.theme_style = data['theme']
         self.theme_cls.primary_palette = "BlueGray"
