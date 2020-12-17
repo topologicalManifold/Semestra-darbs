@@ -18,7 +18,7 @@ from filemanager import MDFileManager
 from kivy.utils import get_color_from_hex
 from kivy.graphics import Rectangle, Color
 from kivy.uix.scatter import Scatter
-
+from kivy.uix.image import Image
 # load config file
 with open("config.json", 'r') as config_file:
     data = json.load(config_file)
@@ -26,7 +26,8 @@ with open("config.json", 'r') as config_file:
 class ResizableImage(Scatter):
     def __init__(self, **kwargs):
         super(ResizableImage, self).__init__(**kwargs)
-        
+        self.start_pos = None
+        self.end_pos = None
     def on_touch_down(self, touch):
         self.start_pos = None
         if main_app.image_screen.selecting and touch.pos[0] < Window.width*0.8:
@@ -68,11 +69,23 @@ class ResizableImage(Scatter):
             if self.start_pos and self.end_pos:
                 s, e = self.calculate_position_on_image(self.start_pos, self.end_pos, self.pos, self.size)
                 self.create_histogram(s, e)
+                self.insert_histogram()
+                self.calculate_average_color(s, e)
+                self.insert_average_color()
         else:
             super(ResizableImage, self).on_touch_up(touch)
 
-    def create_histogram(s, e):
+    def create_histogram(self, s, e):
         pass
+    def insert_histogram(self):
+        main_app.image_screen.ids.histogram.opacity = 1
+        main_app.image_screen.ids.histogram.source = "histogram.png"
+
+    def calculate_average_color(self, s, e):
+        main_app.image_screen.average_color = [0, 1, 1, 1]
+
+    def insert_average_color(self):
+        main_app.image_screen.ids.average_color = main_app.image_screen.average_color
 
     def calculate_position_on_image(self, s_pos, e_pos, i_pos, size):
         real_start_pos = [s_pos[0] - i_pos[0], s_pos[1] - i_pos[1]]
@@ -108,7 +121,7 @@ class CustomIconButtonGroup(GridLayout):
 
 class ImageScreen(Screen):
     selecting = properties.BooleanProperty(False)
-
+    average_color = properties.ColorProperty([1, 0, 0, 1])
 
 class MainScreen(Screen):
     pass

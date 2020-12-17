@@ -50,8 +50,11 @@
         theme_text_color: "Custom"
         text_color: get_color_from_hex("#ffffff")
         on_press: app.open_main_screen()
+        size_hint_y: None
     CustomIconButtonGroup:
         id: icon_button_group
+        size_hint_y: None
+
 
 <ImageScreen>:
     GridLayout:
@@ -61,7 +64,36 @@
             ResizableImage:
                 id: resizable_image
         CustomToolBar:
+            id: custom_toolbar
             size_hint_x: 0.2
+            
+            Image:
+                id: histogram
+                opacity: 0
+                width: 0.2 * win.Window.width
+                
+            GridLayout:
+                rows: 1
+                size_hint_y: 0.1
+                MDLabel:
+                    text: "vidējā krāsa: "
+                    size_hint_x: 0.8
+                    color: app.text_color
+                    halign: "center"
+                Widget:
+                    size_hint_x: 0.2
+                    paddint: 10, 0
+                    canvas:
+                        Color:
+                            rgba: root.average_color
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+            Widget:
+                size_hint_y: 1
+                
+                
         Widget:
             id: canvas_widget
             size_hint_x: 0
