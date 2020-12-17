@@ -61,13 +61,11 @@ class ResizableImage(Scatter):
         else:
             if touch.pos[0] < Window.width*0.8:
                 super(ResizableImage, self).on_touch_move(touch)
-        #print("[IPOS    ]", self.pos)
+
 
     def on_touch_up(self, touch):
         if main_app.image_screen.selecting:
             if self.start_pos and self.end_pos:
-                
-                #print("[POS S E ]", self.start_pos, self.end_pos)
                 s, e = self.calculate_position_on_image(self.start_pos, self.end_pos, self.pos, self.size)
                 self.create_histogram(s, e)
         else:
@@ -76,12 +74,9 @@ class ResizableImage(Scatter):
     def create_histogram(s, e):
         pass
 
-    def calculate_position_on_image(self, s_pos, e_pos, i_pos, size):    #BUG: after resizing it finds region incorectly
+    def calculate_position_on_image(self, s_pos, e_pos, i_pos, size):
         real_start_pos = [s_pos[0] - i_pos[0], s_pos[1] - i_pos[1]]
         real_end_pos = [e_pos[0] - i_pos[0], e_pos[1] - i_pos[1]]
-        #print("[R POS S E]", real_start_pos, real_end_pos)
-        #print("[M SIZE  ]", s_pos[0] - e_pos[0], s_pos[1] - e_pos[1])
-        #print("[R SIZE  ]", real_start_pos[0] - real_end_pos[0], real_start_pos[1] - real_end_pos[1], size)
         img = PIL.Image.open(main_app.image_path)
         w, h = img.size
         img_pos_start = [round(w * real_start_pos[0] / size[0], 0), round(h * real_start_pos[1] / size[1], 0)]
@@ -90,7 +85,6 @@ class ResizableImage(Scatter):
         _s = min((img_pos_start[0], img_pos_end[0])), h - max((img_pos_start[1], img_pos_end[1]))
         _e = max((img_pos_start[0], img_pos_end[0])), h - min((img_pos_start[1], img_pos_end[1]))
         return _s, _e
-        #print("[W H S E SIZE]", w, h, _s, _e, (_e[0]-_s[0], _e[1]- _s[1]))
     
     def if_cursor_inside_image(self, pos, size, point):
         if (point[0] > pos[0] and point[0] < pos[0]+size[0] and point[1] > pos[1] and point[1] < pos[1]+size[1]): 
