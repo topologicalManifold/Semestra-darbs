@@ -24,6 +24,20 @@
                 text: ""
                 on_press: app.cahnge_theme()
                 text_color: app.text_color
+            BoxLayout:
+                size_hint: (0.2, None)
+                orientation: "horizontal"
+                MDLabel:
+                    size_hint_x: 0.7
+                    text: "Maximize screen: "
+                    color: app.text_color
+                MDCheckbox:
+                    id: maximize_screen
+                    size_hint_x: 0.3
+                    size_hint: None, None
+                    size: "48dp", "48dp"
+                    selected_color: app.text_color
+                    pos_hint: {'center_x': .5, 'center_y': .5}
             MDLabel:
                 text: "Citi iestatījumi nav paredzēti..."
                 size_hint: (1, None)

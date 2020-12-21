@@ -1,14 +1,29 @@
+#
+########################################################
+#Look, we spent more than 10 hours on this code.
+#We have no idea how it works, but it works
+#If ANYTHING happens to it, YOU will be the one
+#who will spend the next many hours trying to fix it
+########################################################
+#
+
 import os
 import glob
 import json
 import PIL
+
 # disabling multitouch
-from kivy.config import Config  # must be imported first!
+from kivy.config import Config
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 
+from kivy.core.window import Window
+with open("config.json", 'r') as config_file:
+    data = json.load(config_file)
+if data.get("maximize", "down") == "down":
+    Window.maximize()
 
 from kivymd.app import MDApp
-from kivy.core.window import Window
+
 from kivy.lang.builder import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 import kivy.properties as properties
@@ -19,9 +34,8 @@ from kivy.utils import get_color_from_hex
 from kivy.graphics import Rectangle, Color
 from kivy.uix.scatter import Scatter
 from kivy.uix.image import Image
-# load config file
-with open("config.json", 'r') as config_file:
-    data = json.load(config_file)
+
+the_answer_to_the_ultimate_question_of_life_the_universe_and_everything = 42
 
 class ResizableImage(Scatter):
     def __init__(self, **kwargs):
@@ -38,7 +52,7 @@ class ResizableImage(Scatter):
         elif ((not main_app.image_screen.selecting) and touch.pos[0] < Window.width*0.8):
             super(ResizableImage, self).on_touch_down(touch)
 
-    def on_touch_move(self, touch):
+    def on_touch_move(self, touch): #BLACK MAGIC! DO NOT TOUCH!
         self.end_pos = None
         if main_app.image_screen.selecting:
             if touch.pos[0] < Window.width*0.8:
@@ -67,7 +81,7 @@ class ResizableImage(Scatter):
     def on_touch_up(self, touch):
         if main_app.image_screen.selecting:
             if self.start_pos and self.end_pos:
-                s, e = self.calculate_position_on_image(self.start_pos, self.end_pos, self.pos, self.size)
+                s, e = self.calculate_position(self.start_pos, self.end_pos, self.pos, self.size)
                 self.create_histogram(s, e)
                 self.insert_histogram()
                 self.calculate_average_color(s, e)
@@ -87,7 +101,7 @@ class ResizableImage(Scatter):
     def insert_average_color(self):
         main_app.image_screen.ids.average_color = main_app.image_screen.average_color
 
-    def calculate_position_on_image(self, s_pos, e_pos, i_pos, size):
+    def calculate_position(self, s_pos, e_pos, i_pos, size):
         real_start_pos = [s_pos[0] - i_pos[0], s_pos[1] - i_pos[1]]
         real_end_pos = [e_pos[0] - i_pos[0], e_pos[1] - i_pos[1]]
         img = PIL.Image.open(main_app.image_path)
@@ -121,7 +135,7 @@ class CustomIconButtonGroup(GridLayout):
 
 class ImageScreen(Screen):
     selecting = properties.BooleanProperty(False)
-    average_color = properties.ColorProperty([1, 0, 0, 1])
+    average_color = properties.ColorProperty([0, 0, 0, 0])
 
 class MainScreen(Screen):
     pass
@@ -153,12 +167,16 @@ class MainApp(MDApp):
 
         self.settings_screen = SettingsScreen(name="settings")
         self.screen_manager.add_widget(self.settings_screen)
+        self.settings_screen.ids.maximize_screen.state = data["maximize"]
+
 
         self.about_screen = AboutScreen(name="about")
         self.screen_manager.add_widget(self.about_screen)
 
         self.image_screen = ImageScreen(name="image")
         self.screen_manager.add_widget(self.image_screen)
+
+
         return self.screen_manager
 
 
@@ -188,7 +206,7 @@ class MainApp(MDApp):
         self.manager_open = False
         self.file_manager.close()
     
-    def open_file_and_set_image_screen(self):
+    def open_file_and_set_image_screen(self):   # sometimes I believe compiler ignores all my comments
         path = self.main_screen.ids.image_path_input.text
         if os.path.isfile(path) and os.path.splitext(path)[1] in [".png", ".jpg", "jpeg"]:
             self.image_path = path
@@ -217,6 +235,7 @@ class MainApp(MDApp):
     def open_main_screen_and_save_settings(self):
         self.screen_manager.current = "main"
         data["theme"] = self.theme_cls.theme_style
+        data["maximize"] = self.settings_screen.ids.maximize_screen.state
         self.write_data_to_config_file()
 
     def open_main_screen(self):
