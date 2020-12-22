@@ -3,8 +3,12 @@
 \usepackage{hyperref}
 
 
+\usepackage{polyglossia}
+\setdefaultlanguage{latvian}
+
 \usepackage{listings}
 \usepackage{color}
+\usepackage{graphicx}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -46,7 +50,7 @@
 
 \section{Uzdevuma nosacījumi}
 Izveidot programmu ar grafisko saskarni, ar kuras palīdzību var ielasīt attēlus un ar peles kursoru iezīmēt kādu attēla apgabalu. Programma veic iezīmētās attēla daļas krāsu statistisko analīzi: parāda pikseļu gaišuma (luminosity) histogrammu un vidējo krāsu.\footnote{nosacījumi paņemti no 
-semestra darba nosacījumu faila [https://estudijas.lu.lv/pluginfile.php/910084/mod_resource/content/2/semestra_darbi_2020.pdf]}
+ \href{https://estudijas.lu.lv/pluginfile.php/910084/mod_resource/content/2/semestra_darbi_2020.pdf}{semestra darba nosacījumu faila}}
 \section{Grafiskais interfeiss}
 Grafiskā interfeisa izveidei tika izmantota \href{https://kivy.org/#home}{Kivy} bibliotēka. Diemžēl logdaļas (widgets), ko piedāvā Kivy, izskatās slikti\footnote{tie izskatās tā it kā būtu veidoti, kad Windows 95 vēl bija populārs}, līdz ar to mēs pieņēmām lēmumu izmantot arī bibliotēku \href{https://github.com/kivymd/KivyMD}{KivyMD}, kas piedāvā daudz vidžetu, kas labi izskatās.
 
@@ -126,5 +130,35 @@ def histogram(path, start, end):
     plt.savefig("histogram.png")
     
 \end{lstlisting}
+
+\pagebreak
+\section{Izstrādes process un piemērs}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{process.png}
+    \caption{Programmas izstrādes process}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{main_logs.png}
+    \caption{Galvenais ekrāns, kur var izvēlēties failu}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{atverts_attels.png}
+    \caption{Izvēlētais attēls}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{iezimets.png}
+    \caption{Izvēlētā attēla apgabala iezīmēšanas process un rezultāts}
+    \label{fig:my_label}
+\end{figure}
 
 \end{document}
