@@ -1,15 +1,8 @@
-#
-########################################################
-#Look, we spent more than 10 hours on this code.
-#We have no idea how it works, but it works
-#If ANYTHING happens to it, YOU will be the one
-#who will spend the next many hours trying to fix it
-########################################################
-#
-
 import os
 import glob
 import json
+import numpy as np
+import matplotlib.pyplot as plt
 import PIL
 
 # disabling multitouch
@@ -19,7 +12,7 @@ Config.set('input', 'mouse', 'mouse,disable_multitouch')
 from kivy.core.window import Window
 with open("config.json", 'r') as config_file:
     data = json.load(config_file)
-if data.get("maximize", "down") == "down":
+if data.get("maximize", "normal") == "down":
     Window.maximize()
 
 from kivymd.app import MDApp
@@ -45,7 +38,7 @@ class ResizableImage(Scatter):
     def on_touch_down(self, touch):
         self.start_pos = None
         if main_app.image_screen.selecting and touch.pos[0] < Window.width*0.8:
-            if self.if_cursor_inside_image(self.pos, self.size, touch.pos):
+            if self.if_cursor_inside_image(self.pos, self.size, touch.pos) and not touch.is_mouse_scrolling:
                 self.start_pos = touch.pos
             else:
                 self.start_pos = None
@@ -82,21 +75,29 @@ class ResizableImage(Scatter):
         if main_app.image_screen.selecting:
             if self.start_pos and self.end_pos:
                 s, e = self.calculate_position(self.start_pos, self.end_pos, self.pos, self.size)
-                self.create_histogram(s, e)
+                self.create_histogram_and_calculate_average_color(s, e)
                 self.insert_histogram()
-                self.calculate_average_color(s, e)
                 self.insert_average_color()
         else:
             super(ResizableImage, self).on_touch_up(touch)
 
-    def create_histogram(self, s, e):
-        pass
+    def create_histogram_and_calculate_average_color(self, s, e):
+        image = PIL.Image.open(main_app.image_path)
+        image = image.crop((*s, *e))
+        image_grayscale = np.array(image.convert("L"))
+        plt.cla()
+        plt.hist(image_grayscale.flatten())
+        plt.savefig("histogram.png")
+        average_color_per_row = np.average(image, axis=0)
+        average_color = np.average(average_color_per_row, axis=0) / 255
+        average_color = [average_color[0], average_color[1], average_color[2], 1]
+        main_app.image_screen.average_color = average_color
+
     def insert_histogram(self):
         main_app.image_screen.ids.histogram.opacity = 1
         main_app.image_screen.ids.histogram.source = "histogram.png"
+        main_app.image_screen.ids.histogram.reload()
 
-    def calculate_average_color(self, s, e):
-        main_app.image_screen.average_color = [0, 1, 1, 1]
 
     def insert_average_color(self):
         main_app.image_screen.ids.average_color = main_app.image_screen.average_color
@@ -167,7 +168,7 @@ class MainApp(MDApp):
 
         self.settings_screen = SettingsScreen(name="settings")
         self.screen_manager.add_widget(self.settings_screen)
-        self.settings_screen.ids.maximize_screen.state = data["maximize"]
+        self.settings_screen.ids.maximize_screen.state = data.get("maximize", "normal")
 
 
         self.about_screen = AboutScreen(name="about")
