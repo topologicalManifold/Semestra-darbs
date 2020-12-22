@@ -8,3 +8,6 @@ Izveidot programmu ar grafisko saskarni, ar kuras palīdzību var ielasīt
 attēlusun ar peles kursoru iezīmēt kādu attēla apgabalu. Programma veic 
 iezīmētās attēla daļas krāsustatistisko analīzi: parāda pikseļu gaišuma (luminosity) 
 histogrammu un vidējo krāsu.
+
+**Vēlos piebilst, ka šo sadaļu par darba noscījumiem mēs neraktījam. Šī nosacījumi bija paņemti no 
+Semestra darba nosacījumu faila [https://estudijas.lu.lv/pluginfile.php/910084/mod_resource/content/2/semestra_darbi_2020.pdf]**
