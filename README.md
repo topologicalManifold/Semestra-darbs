@@ -7,3 +7,6 @@
 3. [numpy](https://numpy.org/)
 4. [matplotlib](https://matplotlib.org/)
 5. Pillow==8.0.1 [PIL](https://pillow.readthedocs.io/en/stable/)
+
+## Kā darboties?
+Lai palaistu programmu, vienkārši palaideit failu main.py!

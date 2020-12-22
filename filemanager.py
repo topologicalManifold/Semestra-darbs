@@ -1,3 +1,9 @@
+# šo failu mēs nerakstījam.
+# šīs fails pieder bibliotēkai KivyMD
+# https://github.com/kivymd/KivyMD
+# diemžēl oriģinālajā fialā bija pievienota poga, kas mums nebija vajadzīga, līdz ar to mēs
+# nokopējam failu un izdzēsam to pogu,
+# lai varētu izmantot MDFileManager klasi (bez pogas) mūsu projektā
 """
 Components/File Manager
 =======================
