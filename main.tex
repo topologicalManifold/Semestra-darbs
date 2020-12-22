@@ -47,22 +47,22 @@
 \section{Uzdevuma nosacījumi}
 Izveidot programmu ar grafisko saskarni, ar kuras palīdzību var ielasīt attēlus un ar peles kursoru iezīmēt kādu attēla apgabalu. Programma veic iezīmētās attēla daļas krāsu statistisko analīzi: parāda pikseļu gaišuma (luminosity) histogrammu un vidējo krāsu.
 \section{Grafiskais interfeiss}
-Grafiskā interfeisa izveidei tika izmantota \href{https://kivy.org/#home}{Kivy} bibliotēka. Diemžēl, logdaļas (widgets), ko piedāvā Kivy izskatās slikti\footnote{tie izskatās tā, it kā būtu veidoti, kad Windows vēl 95 bija populārs}, līdz at to, mēs pieņemam lēmumu izmantot arī biblioteku \href{https://github.com/kivymd/KivyMD}{KivyMD}, kas piedāvā daudz vidžetu, kas labi izskatās.
+Grafiskā interfeisa izveidei tika izmantota \href{https://kivy.org/#home}{Kivy} bibliotēka. Diemžēl logdaļas (widgets), ko piedāvā Kivy, izskatās slikti\footnote{tie izskatās tā it kā būtu veidoti, kad Windows 95 vēl bija populārs}, līdz ar to mēs pieņēmām lēmumu izmantot arī bibliotēku \href{https://github.com/kivymd/KivyMD}{KivyMD}, kas piedāvā daudz vidžetu, kas labi izskatās.
 
 \section{Attēla apgabala iezīmēšana}
 Uzdevuma nosacījumos tiek prasīts, lai lietotājs varētu iezīmēt attēla apgabalu, lai veiktu tā krāsu statistisko analīzi.
-Tā kā tālākā attēla apstrāde notiek, izmantojot \textit{PIL} moduli, kur attēla koordinātas tiek skaitītas no augšējā kreisajā stūra (x ass ir vērsta pa labi un y ass ir vērsta uz leju), ir nepieciešams pārveidot vienu koordinātu sistēmu uz otru. Kivy koordinātu sistēma sākas apakšējā kreisajā stūrī un x ass ir vērsta pa labi, bet y ass ir vērsta pa kreisi. Visu objektu koordināta ir objekta kreisā apakšējā stūra koordināta. Tā kā programma piedāvā lietotājam mainīt attēla koordinātu(pārtvietot attēlu pa logu), bija nepieciešams izstrādāt algoritmu, kas pārveidos peles klikšķa no loga koordinātu sistēmas attēla koordinātu sistēmā. Turpmāk klikšķa koordinātu apzīmēsim ar $t$, attēla koordinātu ar $i$, klikšķa koordinātu attēla koordinātu sistēmā ar $v$ un attēla izmēru logā ar $s$, bet attēla īsto izmēru ar $w$.
+Tā kā tālākā attēla apstrāde notiek, izmantojot \textit{PIL} moduli, kur attēla koordinātas tiek skaitītas no augšējā kreisā stūra (x ass ir vērsta pa labi un y ass ir vērsta uz leju), ir nepieciešams pārveidot vienu koordinātu sistēmu uz otru. Kivy koordinātu sistēma sākas apakšējā kreisajā stūrī un x ass ir vērsta pa labi, bet y ass ir vērsta uz augšu. Visu objektu koordinātas ir objekta kreisā apakšējā stūra koordinātas. Tā kā programma piedāvā lietotājam mainīt attēla koordinātas (pārtvietot attēlu pa logu), bija nepieciešams izstrādāt algoritmu, kas pārveidos peles klikšķa koordinātas no loga koordinātu sistēmas attēla koordinātu sistēmā. Turpmāk klikšķa koordinātu apzīmēsim ar $t$, attēla koordinātu ar $i$, klikšķa koordinātu attēla koordinātu sistēmā ar $v$ un attēla izmēru logā ar $s$, bet attēla īsto izmēru ar $w$.
 
-Acīmredzot, lai iegūtu klikšķa koordinātu attēla koordinātu sistēmā ir nepieciešams atņemt attiecīgo attēla koordinātes komponenti no klikšķa koordinātes:
+Acīmredzot, lai iegūtu klikšķa koordinātu attēla koordinātu sistēmā ir nepieciešams atņemt attiecīgo attēla koordinātas komponenti no klikšķa koordinātas:
 $$
     v_j\prime = t_j - i_j
 $$
-Bet iegūta koordināta ir koordināta attēlā ar citu izmēru, līdz at to, īsto koodinātu var atrast ar proporciju.
+Bet iegūtā koordināta ir koordināta attēlā ar citu izmēru, līdz at to, īsto koodinātu var atrast ar proporciju.
 $$
     v_j = \frac{v_j\prime \cdot w_j}{s_j}
 $$
 
-PIL izmanto atšķirīgu no Kivy koordinātu sistēmu - koordinātu sākumpunkts atrodas augšējā kreisajā stūrī, x ass ir vērsta pa labi, bet y ass uz leju, līdz at to koordinātu $v_j$ jāpārveido uz PIL koordinātu sistēmu, lai būtu iespējams izgriezt iezīmēto daļu.
+PIL izmanto atšķirīgu no Kivy koordinātu sistēmu - koordinātu sākumpunkts atrodas augšējā kreisajā stūrī, x ass ir vērsta pa labi, bet y ass uz leju, līdz ar to koordinātu $v_j$ jāpārveido uz PIL koordinātu sistēmu, lai būtu iespējams izgriezt iezīmēto daļu.
 $$
     x = w_x - v_x
 $$
@@ -88,15 +88,15 @@ def calculate_position(self, s_pos, e_pos, i_pos, size):
 
 \section{Vidējās krāsas noteikšana}
 
-Katra pikseļa krāsu nosaka trīs skaitļi no 0 līdz 255. Katrs skaitlis atbilst attiecīgas krāsas - sarkanās, zaļas un zilas (RGB) - īpatsvaru. Attēls (vai arī attēla iezīmētais apgabals), kura izmēri ir $n\times m$ pikseļi tiek glabāts kā $n\times m \times 3$ vai arī $n \times m \times 4$ (jā attēls ir RGBA\footnote{RGBA darbojas ļoti līdzīgi, kā RGB, bet tam ir vēl viens papildus skaitlis no 0 līdz 255 katram pikselim, kas nosaka pikseļa caurspīdīgumu} formātā) matrica, kuru turpmāk apzīmēsim $A$ un atsevišķa pikseļa konkrētas krāsas intensitāti apzīmēsim ar $A_{ijk}$. Piemēram, pikseļa $(6, 12)$ sarkanās krāsas intensitāte ir $A_{6,12,1}$. Līdz ar to, lai noteiktu vidējo krāsu, ir jānosaka katras pamatkrāsas (sarkanās, zaļas un zilas) vidējo intensitāti. To var izdarīt šādi:
+Katra pikseļa krāsu nosaka trīs skaitļi no 0 līdz 255. Katrs skaitlis atbilst attiecīgās krāsas - sarkanās, zaļās un zilās (RGB) - īpatsvaram. Attēls (vai arī attēla iezīmētais apgabals), kura izmēri ir $n\times m$ pikseļi tiek glabāts kā $n\times m \times 3$ vai arī $n \times m \times 4$ (ja attēls ir RGBA\footnote{RGBA darbojas ļoti līdzīgi kā RGB, bet tam ir vēl viens papildus skaitlis no 0 līdz 255 katram pikselim, kas nosaka pikseļa caurspīdīgumu} formātā) matrica, kuru turpmāk apzīmēsim $A$ un atsevišķa pikseļa konkrētas krāsas intensitāti apzīmēsim ar $A_{ijk}$. Piemēram, pikseļa $(6, 12)$ sarkanās krāsas intensitāte ir $A_{6,12,1}$. Līdz ar to, lai noteiktu vidējo krāsu, ir jānosaka katras pamatkrāsas (sarkanās, zaļās un zilās) vidējā intensitāte. To var izdarīt šādi:
 $$
     C_{k} = \frac{\sum_i^n \sum_j^m A_{i,j,k}}{n\cdot m}
 $$
-Sākumā var atrast vidējo vērtību katrā matricas (attēla) rindiņā $ R_{i,k} = \frac{1}{m}\sum_j^m A_{i,j,k}$, un tad no tā atrast vidējo vērtību starp rindiņu vedējām vērtībām:
+Sākumā var atrast vidējo vērtību katrā matricas (attēla) rindiņā $ R_{i,k} = \frac{1}{m}\sum_j^m A_{i,j,k}$, un tad no tā atrast vidējo vērtību starp rindiņu vidējām vērtībām:
 $$
     C_{k} = \frac{1}{n}\sum_i^n R_{i,k}
 $$
-Tā, kā rezultātā vispārīgajā gadījumā vērtība $C_{k}$ ir daļskaitlis, tas jānoapaļo, jo tam jābūt veselajam skaitlim no 0 līdz 255.
+Tā kā rezultātā vispārīgā gadījumā vērtība $C_{k}$ ir daļskaitlis, tas jānoapaļo, jo tam jābūt veselam skaitlim no 0 līdz 255.
 
 Kodā tas tika realizēts šādi:
 \begin{lstlisting}
@@ -111,7 +111,7 @@ def average_color(path, start, end):
     
 \end{lstlisting}
 \section{Pikseļu gaišuma histogramma}
-Lai atrastu gaišuma histogramu, attēla apgabalu $A$ ar izmēru $n\times m\times 3$ vai $n\times m \times 4$ jāpārveido uz melnbaltu attēlu, līdz ar to to var reprezentēt vienkārši kā $n\times m$ matricu. Iegūtu matricu jāpārveido uz 1-d masīvu, ar kuru jāveido histogrammu. Kodā tas tika realizēts šādi:
+Lai atrastu gaišuma histogrammu, attēla apgabalu $A$ ar izmēru $n\times m\times 3$ vai $n\times m \times 4$ jāpārveido par melnbaltu attēlu, līdz ar to to var reprezentēt vienkārši kā $n\times m$ matricu. Iegūto matricu jāpārveido uz 1-d masīvu, no kura jāveido histogramma. Kodā tas tika realizēts šādi:
 \begin{lstlisting}
 import numpy as np
 import matplotlib.pyplot as plt
